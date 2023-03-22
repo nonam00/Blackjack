@@ -4,11 +4,15 @@
 #include <vector>
 #include <string>
 
+//random
 std::random_device dev;
 std::mt19937 rng(dev());
 std::uniform_int_distribution <> gen32(0, 51);
+
+//vector of card pack
 std::vector<std::string> pack;
 
+//filling of vector
 void pack_init(std::vector<std::string>& cards) {
 	for (int i = 2; i <= 10; i++)
 		for (int j = 0; j < 4; j++)
@@ -22,11 +26,7 @@ void pack_init(std::vector<std::string>& cards) {
 	}
 }
 
-void final(char operation, double stavka, double money)
-{
-	std::cout << operation << stavka << std::endl;
-}
-
+//entity of the card
 class Card 
 {
 
@@ -44,6 +44,7 @@ public:
 		
 		name = pack[id];
 		pack.erase(pack.begin()+id);
+
 		if (name == "J" || name == "Q" || name == "K")
 			mark = 10;
 		else if (name == "A")
@@ -65,6 +66,7 @@ protected:
 
 };
 
+//Player cards
 class Hand
 {
 
@@ -80,6 +82,7 @@ public:
 		}
 	}
 
+	//prints player cards
 	void print()
 	{	
 		std::cout << "Your cards: " << std::endl;
@@ -88,6 +91,7 @@ public:
 		std::cout << std::endl << "score: " << score << std::endl << std::endl;
 	}
 
+	//prints dealer cards
 	void enemy_print(bool game)
 	{
 		std::cout << "Dealer's cards: " << std::endl;
@@ -105,12 +109,53 @@ public:
 		std::cout << std::endl;
 	}
 
+	//adds a card to the person
 	void addCard()
 	{
 		Card temp;
 		score += temp.Mark();
 		cards.push_back(temp);
 	}
+
+	//do a split
+	void Split()
+	{
+		cards.pop_back();
+		score -= 10;
+		this->addCard();
+	}
+
+	void BustCancel()
+	{
+		for (auto item : cards)
+			if (item.Name() == "A")
+			{
+				score -= 10;
+				break;
+			}
+	}
+
+	bool split_check()
+	{
+		return cards.size() == 2 && cards[0].Mark() == 10 && cards[1].Mark() == 10;
+	}
+
+	//checks about score
+	bool auto_win()
+	{
+		if ((cards[0].Name() == "A" && cards[1].Name() == "A") || score==21)
+			return true;
+		else
+			return false;
+	}
+
+	//bust check
+	bool Bust()
+	{
+		return score > 21;
+	}
+
+	void Score(int new_score) { score = new_score; }
 
 	int Score() { return score; }
 
@@ -123,128 +168,172 @@ protected:
 
 };
 
+void final(char operation, double stavka, double money)
+{
+	std::cout << operation << stavka << std::endl;
+}
+
+void all_print(Hand dealer, Hand player, bool game)
+{
+	dealer.enemy_print(game);
+	std::cout << std::endl << std::endl << std::endl;
+
+	player.print();
+	std::cout << std::endl << std::endl;
+}
+
+
 int main()
 {
-	pack_init(pack);
 
-	double money = 1000;
-	
+	double money;
+	std::cout << "Your budget: ";
+	std::cin >> money; std::cout << std::endl << std::endl;
 
-	while (money>0) {
-
-		std::cout << "Money: " << money << std::endl;
-
-		double stavka;
-		std::cout << "Make a deal:\n";
-		std::cin >> stavka;
-
-		if (stavka == 0)
+	if (money > 0)
+	{
+		while (money > 0)
 		{
-			std::cout << "Thanks for the game\n";
-			break;
-		}
-		if (stavka > money)
-			continue;
+			pack_init(pack);
+			std::cout << "Money: " << money << std::endl;
 
-		money -= stavka;
+			double stavka;
+			std::cout << "Make a deal:\n";
+			std::cin >> stavka;
 
-		Hand dealer;
-		dealer.enemy_print(0);
-
-		std::cout << std::endl << std::endl;
-
-		Hand player;
-		player.print();
-		
-		std::string choice;
-		while (true)
-		{
-			if (player.Cards()[0].Name() == "A" || player.Cards()[1].Name() == "A")
-				break;
-			std::cout << "Your choice: Stand, Hit, Double\n";
-			std::cin >> choice;
-			std::cin.ignore();
-			std::cout << std::endl;
-
-			if (choice == "Stand")
-				break;
-
-			else if (choice == "Hit")
+			if (stavka == 0) //game ends if price will be equal to 0
 			{
-				player.addCard();
-				player.print();
-				if (player.Score() >= 21)
+				std::cout << "Thanks for the game" << std::endl;
+				break;
+			}
+			if (stavka > money)
+				continue;
+
+			money -= stavka;
+
+			Hand dealer;
+			Hand player;
+
+			bool split = false;
+
+			std::string choice;
+			while (true)
+			{
+				all_print(dealer, player, 0);
+				if (player.auto_win() || player.auto_win())
+					break;
+				std::cout << "Your choice: Stand, Hit, Double";
+				if (player.split_check())
 				{
-					for (auto item : player.Cards())
-					{
-						if (item.Name() == "A")
-						{
-							item.Mark(1);
-						}
-					}
-					if (player.Score() >= 21)
-					{
+					std::cout << ", Split";
+					split = true;
+				}
+				std::cout << std::endl;
+				std::cin >> choice;
+				std::cin.ignore();
+				std::cout << std::endl;
+
+				if (choice == "Stand")
+				{
+					system("cls");
+					break;
+				}
+
+				else if (choice == "Hit")
+				{
+					system("cls");
+					player.addCard();
+					if (player.auto_win())
 						break;
+					else if (player.Bust())
+					{
+						player.BustCancel();
+						if (player.Score() > 21)
+							break;
 					}
 				}
-					
+				else if (choice == "Double")
+				{
+					system("cls");
+					stavka *= 2;
+					std::cout << "Stavka: " << stavka << std::endl << std::endl;
+					player.addCard();
+					break;
+				}
+				else if (split && choice == "Split")
+					player.Split();
+				else
+					std::cout << "Wrong choice. Try again" << std::endl;
 			}
-			else if (choice == "Double")
-			{
-				
-				stavka *= 2;
-				std::cout << "Stavka" << stavka << std::endl << std::endl;
-				player.addCard();
-				player.print();
-				break;
-			}
-		}
-		dealer.enemy_print(1);
-		std::cout << std::endl;
 
-		if (player.Score() < dealer.Score())
-		{
-			std::cout << "Dealer wins" << std::endl;
-			final('-', stavka, money);
-		}
-		
-		else if (player.Score() > 21)
-		{
-			std::cout << "Bust" << std::endl;
-			final('-', stavka, money);
-		}
+			system("cls");
 
-		else if (player.Score() > dealer.Score())
-		{
-			std::cout << "Win" << std::endl;
-			final('+', stavka, money);
-			money += stavka*2;
-		}
-		
-		else if (player.Cards()[0].Name() == "A" || player.Cards()[1].Name() == "A")
-		{
-			std::cout << "21!" << std::endl;
-			money += 2.5 * stavka;
-		}
+			all_print(dealer, player, 1);
 
-		else if (player.Score() == 21)
-		{
-			if (dealer.Score() == 21)
+			if (player.auto_win())
 			{
-				std::cout << "Draw" << std::endl;
+				if (dealer.auto_win())
+					std::cout << "Draw" << std::endl;
+				else
+				{
+					std::cout << "21!" << std::endl;
+					money += 2.5 * stavka;
+					std::cout << "+" << stavka * 2.5 << std::endl;
+				}
 			}
-			else
+
+			else if (dealer.auto_win())
 			{
-				std::cout << "21!" << std::endl;
-				money += 2.5 * stavka;
+				std::cout << "Dealer wins" << std::endl;
+				final('-', stavka, money);
 			}
+
+			else if (player.Score() < dealer.Score())
+			{
+				std::cout << "Dealer wins" << std::endl;
+				final('-', stavka, money);
+			}
+
+			else if (player.Bust())
+			{
+				std::cout << "Bust" << std::endl;
+				final('-', stavka, money);
+			}
+
+			else if (player.Score() > dealer.Score())
+			{
+				while ((dealer.Score() < player.Score()) && !dealer.Bust())
+				{
+					Sleep(1000);
+					system("cls");
+
+					std::cout << "Dealer hits" << std::endl << std::endl;
+
+					dealer.addCard();
+
+					if (dealer.Bust())
+						dealer.BustCancel();
+
+					all_print(dealer, player, 1);
+				}
+				if (dealer.Bust() || player.Score()>dealer.Score())
+				{
+					std::cout << "Win" << std::endl;
+					final('+', stavka, money);
+					money += stavka * 2;
+				}
+				else
+				{
+					std::cout << "Dealer wins" << std::endl;
+					final('-', stavka, money);
+				}
+			}
+			system("pause");
+			system("cls");
+			pack.clear();
 		}
-		std::cout << "Money: " << money << std::endl << std::endl;
-		system("pause");
-		system("cls");
+		if (money <= 0)
+			std::cout << "Casino always wins" << std::endl;
 	}
-	if (money <= 0)
-		std::cout << "Casino always wins\n";
-
 	return 0;
 }
