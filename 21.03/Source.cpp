@@ -140,5 +140,6 @@ int main()
 	}
 	if (money <= 0)
 		std::cout << "Casino always wins\n";
+
 	return 0;
 }
