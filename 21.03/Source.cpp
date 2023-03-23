@@ -233,6 +233,7 @@ int main()
 			std::string choice;
 			while (true)
 			{
+				system("cls");
 				all_print(dealer, player, 0);
 				if (player.auto_win() || player.auto_win())
 					break;
@@ -248,14 +249,10 @@ int main()
 				std::cout << std::endl;
 
 				if (choice == "Stand")
-				{
-					system("cls");
 					break;
-				}
 
 				else if (choice == "Hit")
 				{
-					system("cls");
 					player.addCard();
 					if (player.auto_win())
 						break;
@@ -268,9 +265,9 @@ int main()
 				}
 				else if (choice == "Double")
 				{
-					system("cls");
 					stavka *= 2;
 					std::cout << "Stavka: " << stavka << std::endl << std::endl;
+					Sleep(2000);
 					player.addCard();
 					break;
 				}
@@ -278,6 +275,7 @@ int main()
 					player.Split();
 				else
 					std::cout << "Wrong choice. Try again" << std::endl;
+
 			}
 
 			system("cls");
@@ -287,7 +285,10 @@ int main()
 			if (player.auto_win())
 			{
 				if (dealer.auto_win())
+				{
 					std::cout << "Draw" << std::endl;
+					money += stavka;
+				}
 				else
 				{
 					std::cout << "21!" << std::endl;
@@ -316,9 +317,9 @@ int main()
 
 			else if (player.Score() > dealer.Score())
 			{
-				while ((dealer.Score() < player.Score()) && !dealer.Bust())
+				while ((dealer.Score() <= player.Score()) && !dealer.Bust())
 				{
-					Sleep(1000);
+					Sleep(2000);
 					system("cls");
 
 					std::cout << "Dealer hits" << std::endl << std::endl;
@@ -330,7 +331,13 @@ int main()
 
 					all_print(dealer, player, 1);
 				}
-				if (dealer.Bust() || player.Score()>dealer.Score())
+
+				if (dealer.Score() == player.Score())
+				{
+					std::cout << "Draw" << std::endl;
+					money += stavka;
+				}
+				else if (dealer.Bust() || player.Score()>dealer.Score())
 				{
 					std::cout << "Win" << std::endl;
 					final('+', stavka, money);
@@ -347,7 +354,7 @@ int main()
 			pack.clear();
 		}
 		if (money <= 0)
-			std::cout << "Casino always wins" << std::endl;
+			std::cout << std::endl << "Casino always wins" << std::endl;
 	}
 	return 0;
 }
