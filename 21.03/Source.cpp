@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <random>
 #include <vector>
+#include <regex>
 #include <string>
 
 //random
@@ -59,6 +60,19 @@ public:
 	void Mark(int new_mark) { mark = new_mark; }
 	int Mark() { return mark; }
 
+	std::string printCard(std::string name)
+	{
+		std::string card = "##############\n";
+		for (int i = 0; i < 8; i++)
+			card += "#            #\n";
+		card += "##############\n";
+		card[33] = 'C';
+		card[115] = 'C';
+		std::regex reg("C");
+		card = std::regex_replace(card, reg, name);
+		return card;
+	}
+
 protected:
 
 	std::string name;
@@ -85,9 +99,9 @@ public:
 	//prints player cards
 	void print()
 	{	
-		std::cout << "Your cards: " << std::endl;
+		std::cout << "Your cards: " << std::endl << std::endl;
 		for (auto item : cards)
-			std::cout << item.Name() << " ";
+			std::cout << item.printCard(item.Name()) << std::endl << std::endl;
 		std::cout << std::endl << "score: " << score << std::endl << std::endl;
 	}
 
@@ -98,12 +112,13 @@ public:
 		if (game)
 		{
 			for (auto item : cards)
-				std::cout << item.Name() << " ";
+				std::cout << item.printCard(item.Name()) << std::endl << std::endl;
 			std::cout << std::endl << "score: " << score << std::endl;
 		}
 		else
 		{
-			std::cout << cards[0].Name() << " #" << std::endl;
+			std::cout << cards[0].printCard(cards[0].Name()) << std::endl << std::endl
+				<< cards[1].printCard("#") << std::endl << std::endl;
 			std::cout << "score: " << cards[0].Mark() << std::endl;
 		}
 		std::cout << std::endl;
@@ -185,7 +200,6 @@ void all_print(Hand dealer, Hand player, bool game)
 
 int main()
 {
-
 	double money;
 	std::cout << "Your budget: ";
 	std::cin >> money; std::cout << std::endl << std::endl;
