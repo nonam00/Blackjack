@@ -165,10 +165,7 @@ public:
 	}
 
 	//bust check
-	bool Bust()
-	{
-		return score > 21;
-	}
+	bool Bust() { return score > 21; }
 
 	void Score(int new_score) { score = new_score; }
 
