@@ -75,6 +75,7 @@ class Hand
 
 public:
 
+	//distribution of cards to the player
 	Hand()
 	{
 		for (int i = 0; i < 2; i++)
@@ -129,9 +130,6 @@ public:
 			}
 			std::cout << std::endl;
 		}
-		/*for (auto item : cards)
-			std::cout << item.printCard(item.Name()) << std::endl << std::endl;
-		std::cout << std::endl << "score: " << score << std::endl << std::endl;*/
 	}
 
 	//adds a card to the person
@@ -150,6 +148,7 @@ public:
 		this->addCard();
 	}
 
+	//ñhanges the value of card A to 1 if it is in hand
 	void BustCancel()
 	{
 		if (bust_act)
@@ -162,6 +161,7 @@ public:
 				}
 	}
 
+	//checking for the ability to split
 	bool split_check()
 	{
 		return cards.size() == 2 && cards[0].Mark() == 10 && cards[1].Mark() == 10;
@@ -179,10 +179,13 @@ public:
 	//bust check
 	bool Bust() { return score > 21; }
 
+	//set score
 	void Score(int new_score) { score = new_score; }
 
+	//get score
 	int Score() { return score; }
 
+	//get cards in hand
 	std::vector<Card>Cards() { return cards; }
 
 protected:
@@ -193,11 +196,13 @@ protected:
 
 };
 
+//print game results
 void final(char operation, double stavka, double money)
 {
 	std::cout << operation << stavka << std::endl;
 }
 
+//print game table
 void all_print(Hand dealer, Hand player, int game)
 {
 	dealer.print(game);
@@ -209,11 +214,9 @@ void all_print(Hand dealer, Hand player, int game)
 
 int main()
 {
-
 	double money;
 	std::cout << "Your budget: ";
 	std::cin >> money; std::cout << std::endl << std::endl;
-
 	if (money > 0)
 	{
 		while (money > 0)
@@ -230,8 +233,7 @@ int main()
 				std::cout << "Thanks for the game" << std::endl;
 				break;
 			}
-			if (stavka > money)
-				continue;
+			if (stavka > money) continue;
 
 			money -= stavka;
 
@@ -363,8 +365,7 @@ int main()
 			system("cls");
 			pack.clear();
 		}
-		if (money <= 0)
-			std::cout << std::endl << "Casino always wins" << std::endl;
+		if (money <= 0) std::cout << std::endl << "Casino always wins" << std::endl;
 	}
 	return 0;
 }
