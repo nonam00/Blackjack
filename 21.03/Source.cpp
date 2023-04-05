@@ -14,7 +14,8 @@ std::uniform_int_distribution <> gen32(0, 51);
 std::vector<std::string> pack;
 
 //filling of vector
-void pack_init(std::vector<std::string>& cards) {
+void pack_init(std::vector<std::string>& cards)
+{
 	for (int i = 2; i <= 10; i++)
 		for (int j = 0; j < 4; j++)
 			cards.push_back(std::to_string(i));
@@ -60,18 +61,6 @@ public:
 	void Mark(int new_mark) { mark = new_mark; }
 	int Mark() { return mark; }
 
-	std::string printCard(std::string name)
-	{
-		std::string card = "##############\n";
-		for (int i = 0; i < 8; i++)
-			card += "#            #\n";
-		card += "##############\n";
-		card[33] = 'C';
-		card[115] = 'C';
-		std::regex reg("C");
-		card = std::regex_replace(card, reg, name);
-		return card;
-	}
 
 protected:
 
@@ -97,31 +86,52 @@ public:
 	}
 
 	//prints player cards
-	void print()
+	void print(int type)
 	{	
-		std::cout << "Your cards: " << std::endl << std::endl;
-		for (auto item : cards)
-			std::cout << item.printCard(item.Name()) << std::endl << std::endl;
-		std::cout << std::endl << "score: " << score << std::endl << std::endl;
-	}
-
-	//prints dealer cards
-	void enemy_print(bool game)
-	{
-		std::cout << "Dealer's cards: " << std::endl;
-		if (game)
-		{
-			for (auto item : cards)
-				std::cout << item.printCard(item.Name()) << std::endl << std::endl;
-			std::cout << std::endl << "score: " << score << std::endl;
-		}
+		if(type==0)
+			std::cout << "Your cards: " << std::endl << std::endl;
 		else
-		{
-			std::cout << cards[0].printCard(cards[0].Name()) << std::endl << std::endl
-				<< cards[1].printCard("#") << std::endl << std::endl;
-			std::cout << "score: " << cards[0].Mark() << std::endl;
-		}
+			std::cout << "Dealer's cards: " << std::endl;
+		for (int i = 0; i < cards.size(); i++)
+			std::cout << "##############\t";
 		std::cout << std::endl;
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < cards.size(); j++)
+			{
+				if (type == 1 && j==1)
+				{ }
+				else
+				{
+					if (i == 1)
+					{
+						std::cout << "#  " << cards[j].Name();
+						if(cards[j].Name()=="10")
+							std::cout << "        #\t";
+						else
+							std::cout << "         #\t";
+						continue;
+					}
+					else if (i == 5)
+					{
+						std::cout << "#         " << cards[j].Name();
+						if (cards[j].Name() == "10")
+							std::cout << " #\t";
+						else
+							std::cout << "  #\t";
+						continue;
+					}
+				}
+				if(i == 7)
+					std::cout << "##############\t";
+				else
+					std::cout << "#            #\t";
+			}
+			std::cout << std::endl;
+		}
+		/*for (auto item : cards)
+			std::cout << item.printCard(item.Name()) << std::endl << std::endl;
+		std::cout << std::endl << "score: " << score << std::endl << std::endl;*/
 	}
 
 	//adds a card to the person
@@ -142,12 +152,14 @@ public:
 
 	void BustCancel()
 	{
-		for (auto item : cards)
-			if (item.Name() == "A")
-			{
-				score -= 10;
-				break;
-			}
+		if (bust_act)
+			for (auto item : cards)
+				if (item.Name() == "A")
+				{
+					bust_act = false;
+					score -= 10;
+					break;
+				}
 	}
 
 	bool split_check()
@@ -177,6 +189,7 @@ protected:
 
 	std::vector<Card>cards;
 	int score = 0;
+	bool bust_act = true;
 
 };
 
@@ -185,18 +198,18 @@ void final(char operation, double stavka, double money)
 	std::cout << operation << stavka << std::endl;
 }
 
-void all_print(Hand dealer, Hand player, bool game)
+void all_print(Hand dealer, Hand player, int game)
 {
-	dealer.enemy_print(game);
+	dealer.print(game);
 	std::cout << std::endl << std::endl << std::endl;
 
-	player.print();
+	player.print(0);
 	std::cout << std::endl << std::endl;
 }
 
-
 int main()
 {
+
 	double money;
 	std::cout << "Your budget: ";
 	std::cin >> money; std::cout << std::endl << std::endl;
@@ -231,7 +244,7 @@ int main()
 			while (true)
 			{
 				system("cls");
-				all_print(dealer, player, 0);
+				all_print(dealer, player, 1);
 				if (player.auto_win() || player.auto_win())
 					break;
 				std::cout << "Your choice: Stand, Hit, Double";
@@ -277,7 +290,7 @@ int main()
 
 			system("cls");
 
-			all_print(dealer, player, 1);
+			all_print(dealer, player, 2);
 
 			if (player.auto_win())
 			{
@@ -326,7 +339,7 @@ int main()
 					if (dealer.Bust())
 						dealer.BustCancel();
 
-					all_print(dealer, player, 1);
+					all_print(dealer, player, 2);
 				}
 
 				if (dealer.Score() == player.Score())
