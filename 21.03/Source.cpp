@@ -305,7 +305,7 @@ int main()
 				{
 					std::cout << "21!" << std::endl;
 					money += 2.5 * stavka;
-					std::cout << "+" << stavka * 2.5 << std::endl;
+					std::cout << "+" << stavka * 1.5 << std::endl;
 				}
 			}
 
