@@ -229,7 +229,11 @@ int main()
 				std::cout << "Thanks for the game" << std::endl;
 				break;
 			}
-			if (stavka > money || stavka < 0) continue;
+			if (stavka > money || stavka < 0)
+			{
+				system("cls");
+				continue;
+			}
 
 			money -= stavka;
 
@@ -245,7 +249,9 @@ int main()
 				all_print(dealer, player, 1);
 				if (player.auto_win() || player.auto_win())
 					break;
-				std::cout << "Your choice: Stand, Hit, Double";
+				std::cout << "Your choice: Stand, Hit";
+				if (stavka * 2 <= money+stavka)
+					std::cout << ", Double ";
 				if (player.split_check())
 				{
 					std::cout << ", Split";
@@ -271,7 +277,7 @@ int main()
 							break;
 					}
 				}
-				else if (choice == "Double")
+				else if (choice == "Double" && stavka*2<=money+stavka)
 				{
 					stavka *= 2;
 					std::cout << "Stavka: " << stavka << std::endl << std::endl;
