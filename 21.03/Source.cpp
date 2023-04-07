@@ -79,11 +79,7 @@ public:
 	Hand()
 	{
 		for (int i = 0; i < 2; i++)
-		{
-			Card temp;
-			score += temp.Mark();
-			cards.push_back(temp);
-		}
+			this->addCard();
 	}
 
 	//prints player cards
@@ -233,7 +229,7 @@ int main()
 				std::cout << "Thanks for the game" << std::endl;
 				break;
 			}
-			if (stavka > money) continue;
+			if (stavka > money || stavka < 0) continue;
 
 			money -= stavka;
 
