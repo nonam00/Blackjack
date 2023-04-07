@@ -160,7 +160,7 @@ public:
 	//checking for the ability to split
 	bool split_check()
 	{
-		return cards.size() == 2 && cards[0].Mark() == 10 && cards[1].Mark() == 10;
+		return cards.size() == 2 && cards[0].Mark() == cards[1].Mark();
 	}
 
 	//checks about score
