@@ -28,52 +28,52 @@ void pack_init(std::vector<std::string>& cards)
 	}
 }
 
-//entity of the card
-class Card 
-{
-
-public:
-
-	Card()
-	{
-		int id;
-		while (true)
-		{
-			id = gen32(rng);
-			if (id < pack.size())
-				break;
-		}
-		
-		name = pack[id];
-		pack.erase(pack.begin()+id);
-
-		if (name == "J" || name == "Q" || name == "K")
-			mark = 10;
-		else if (name == "A")
-			mark = 11;
-		else
-			mark = stoi(name);
-	}
-
-	void Name(std::string new_name) { name = new_name; }
-	std::string Name() { return name; }
-	
-	void Mark(int new_mark) { mark = new_mark; }
-	int Mark() { return mark; }
-
-
-protected:
-
-	std::string name;
-	int mark;
-
-};
-
 //Player cards
 class Hand
 {
 
 public:
+
+	//entity of the card
+	class Card
+	{
+
+	public:
+
+		Card()
+		{
+			int id;
+			while (true)
+			{
+				id = gen32(rng);
+				if (id < pack.size())
+					break;
+			}
+
+			name = pack[id];
+			pack.erase(pack.begin() + id);
+
+			if (name == "J" || name == "Q" || name == "K")
+				mark = 10;
+			else if (name == "A")
+				mark = 11;
+			else
+				mark = stoi(name);
+		}
+
+		void Name(std::string new_name) { name = new_name; }
+		std::string Name() { return name; }
+
+		void Mark(int new_mark) { mark = new_mark; }
+		int Mark() { return mark; }
+
+
+	protected:
+
+		std::string name;
+		int mark;
+
+	};
 
 	//distribution of cards to the player
 	Hand()
