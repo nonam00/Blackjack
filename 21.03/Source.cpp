@@ -77,6 +77,7 @@ public:
 	//distribution of cards to the player
 	Hand()
 	{
+		score = 0;
 		for (int i = 0; i < 2; i++)
 			this->addCard();
 	}
@@ -185,7 +186,7 @@ public:
 protected:
 
 	std::vector<Card>cards;
-	int score = 0;
+	int score;
 
 };
 
