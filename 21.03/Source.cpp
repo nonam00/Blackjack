@@ -281,6 +281,12 @@ int main()
 					std::cout << "Stavka: " << stavka << std::endl << std::endl;
 					Sleep(2000);
 					player.addCard();
+					if (player.Bust())
+					{
+						player.BustCancel();
+						if (player.Score() > 21)
+							break;
+					}
 					break;
 				}
 				else if (split && choice == "Split")
