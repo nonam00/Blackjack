@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <random>
 #include <vector>
-#include <regex>
 #include <string>
 
 //random
@@ -147,14 +146,13 @@ public:
 	//ñhanges the value of card A to 1 if it is in hand
 	void BustCancel()
 	{
-		if (bust_act)
-			for (auto item : cards)
-				if (item.Name() == "A")
-				{
-					bust_act = false;
-					score -= 10;
-					break;
-				}
+		for (auto item : cards)
+			if (item.Name() == "A" && item.Mark()==11)
+			{
+				item.Mark(1);
+				score -= 10;
+				break;
+			}
 	}
 
 	//checking for the ability to split
@@ -188,7 +186,6 @@ protected:
 
 	std::vector<Card>cards;
 	int score = 0;
-	bool bust_act = true;
 
 };
 
