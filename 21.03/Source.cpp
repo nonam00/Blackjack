@@ -224,6 +224,7 @@ int main()
 			if (stavka == 0) //game ends if price will be equal to 0
 			{
 				std::cout << "Thanks for the game" << std::endl;
+				std::cout << "Money: " << money << std::endl;
 				break;
 			}
 			if (stavka > money || stavka < 0)
@@ -244,7 +245,7 @@ int main()
 			{
 				system("cls");
 				all_print(dealer, player, 1);
-				if (player.auto_win() || player.auto_win())
+				if (player.auto_win() || dealer.auto_win())
 					break;
 				std::cout << "Your choice: Stand, Hit";
 				if (stavka * 2 <= money+stavka)
@@ -284,9 +285,6 @@ int main()
 				}
 				else if (split && choice == "Split")
 					player.Split();
-				else
-					std::cout << "Wrong choice. Try again" << std::endl;
-
 			}
 
 			system("cls");
