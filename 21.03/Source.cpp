@@ -60,14 +60,13 @@ public:
 				mark = stoi(name);
 		}
 
-		void Name(std::string new_name) { name = new_name; }
 		std::string Name() { return name; }
 
 		void Mark(int new_mark) { mark = new_mark; }
 		int Mark() { return mark; }
 
 
-	protected:
+	private:
 
 		std::string name;
 		int mark;
@@ -96,8 +95,7 @@ public:
 		{
 			for (int j = 0; j < cards.size(); j++)
 			{
-				if (type == 1 && j==1)
-				{ }
+				if (type == 1 && j == 1) {}
 				else
 				{
 					if (i == 1)
@@ -139,8 +137,8 @@ public:
 	//do a split
 	void Split()
 	{
+		score -= cards[cards.size()-1].Mark();
 		cards.pop_back();
-		score -= 10;
 		this->addCard();
 	}
 
@@ -157,10 +155,7 @@ public:
 	}
 
 	//checking for the ability to split
-	bool split_check()
-	{
-		return cards.size() == 2 && cards[0].Mark() == cards[1].Mark();
-	}
+	bool split_check() { return cards.size() == 2 && cards[0].Mark() == cards[1].Mark(); }
 
 	//checks about score
 	bool auto_win()
@@ -180,10 +175,7 @@ public:
 	//get score
 	int Score() { return score; }
 
-	//get cards in hand
-	std::vector<Card>Cards() { return cards; }
-
-protected:
+private:
 
 	std::vector<Card>cards;
 	int score;
@@ -325,6 +317,12 @@ int main()
 				final('-', stavka, money);
 			}
 
+			else if (dealer.Score() == player.Score())
+			{
+				std::cout << "Draw" << std::endl;
+				money += stavka;
+			}
+
 			else if (player.Bust())
 			{
 				std::cout << "Bust" << std::endl;
@@ -370,6 +368,10 @@ int main()
 			pack.clear();
 		}
 		if (money <= 0) std::cout << std::endl << "Casino always wins" << std::endl;
+	}
+	else
+	{
+		std::cout << "You don't have any money" << std::endl;
 	}
 	return 0;
 }
