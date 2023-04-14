@@ -42,13 +42,12 @@ public:
 		Card()
 		{
 			int id;
-			while (true)
+			do
 			{
 				id = gen32(rng);
-				if (id < pack.size())
-					break;
-			}
+			} while (id > pack.size());
 
+			id = 51;
 			name = pack[id];
 			pack.erase(pack.begin() + id);
 
