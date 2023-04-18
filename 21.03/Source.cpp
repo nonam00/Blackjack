@@ -275,7 +275,7 @@ int main()
 					player.addCard();
 					if (player.Bust())
 					{
-						player.BustCancel();
+						player.bustCancel();
 						if (player.Score() > 21)
 							break;
 					}
@@ -369,8 +369,6 @@ int main()
 		if (money <= 0) std::cout << std::endl << "Casino always wins" << std::endl;
 	}
 	else
-	{
 		std::cout << "You don't have any money" << std::endl;
-	}
 	return 0;
 }
