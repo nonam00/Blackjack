@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <random>
 #include <vector>
-#include <regex>
 #include <string>
 
 //random
@@ -145,7 +144,7 @@ public:
 	}
 
 	//ñhanges the value of card A to 1 if it is in hand
-	void BustCancel()
+	void bustCancel()
 	{
 		if (bust_act)
 			for (auto item : cards)
@@ -272,7 +271,7 @@ int main()
 						break;
 					else if (player.Bust())
 					{
-						player.BustCancel();
+						player.bustCancel();
 						if (player.Score() > 21)
 							break;
 					}
@@ -341,7 +340,7 @@ int main()
 					dealer.addCard();
 
 					if (dealer.Bust())
-						dealer.BustCancel();
+						dealer.bustCancel();
 
 					all_print(dealer, player, 2);
 				}
