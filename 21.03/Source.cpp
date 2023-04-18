@@ -42,13 +42,12 @@ public:
 		Card()
 		{
 			int id;
-			while (true)
+			do
 			{
 				id = gen32(rng);
-				if (id < pack.size())
-					break;
-			}
+			} while (id > pack.size());
 
+			id = 51;
 			name = pack[id];
 			pack.erase(pack.begin() + id);
 
@@ -60,14 +59,13 @@ public:
 				mark = stoi(name);
 		}
 
-		void Name(std::string new_name) { name = new_name; }
 		std::string Name() { return name; }
 
 		void Mark(int new_mark) { mark = new_mark; }
 		int Mark() { return mark; }
 
 
-	protected:
+	private:
 
 		std::string name;
 		int mark;
@@ -77,6 +75,7 @@ public:
 	//distribution of cards to the player
 	Hand()
 	{
+		score = 0;
 		for (int i = 0; i < 2; i++)
 			this->addCard();
 	}
@@ -95,8 +94,7 @@ public:
 		{
 			for (int j = 0; j < cards.size(); j++)
 			{
-				if (type == 1 && j==1)
-				{ }
+				if (type == 1 && j == 1) {}
 				else
 				{
 					if (i == 1)
@@ -138,29 +136,25 @@ public:
 	//do a split
 	void Split()
 	{
+		score -= cards[cards.size()-1].Mark();
 		cards.pop_back();
-		score -= 10;
 		this->addCard();
 	}
 
 	//ñhanges the value of card A to 1 if it is in hand
 	void bustCancel()
 	{
-		if (bust_act)
-			for (auto item : cards)
-				if (item.Name() == "A")
-				{
-					bust_act = false;
-					score -= 10;
-					break;
-				}
+		for (auto item : cards)
+			if (item.Name() == "A" && item.Mark()==11)
+			{
+				item.Mark(1);
+				score -= 10;
+				break;
+			}
 	}
 
 	//checking for the ability to split
-	bool split_check()
-	{
-		return cards.size() == 2 && cards[0].Mark() == cards[1].Mark();
-	}
+	bool split_check() { return cards.size() == 2 && cards[0].Mark() == cards[1].Mark(); }
 
 	//checks about score
 	bool auto_win()
@@ -180,14 +174,10 @@ public:
 	//get score
 	int Score() { return score; }
 
-	//get cards in hand
-	std::vector<Card>Cards() { return cards; }
-
-protected:
+private:
 
 	std::vector<Card>cards;
-	int score = 0;
-	bool bust_act = true;
+	int score;
 
 };
 
@@ -226,6 +216,7 @@ int main()
 			if (stavka == 0) //game ends if price will be equal to 0
 			{
 				std::cout << "Thanks for the game" << std::endl;
+				std::cout << "Money: " << money << std::endl;
 				break;
 			}
 			if (stavka > money || stavka < 0)
@@ -246,7 +237,7 @@ int main()
 			{
 				system("cls");
 				all_print(dealer, player, 1);
-				if (player.auto_win() || player.auto_win())
+				if (player.auto_win() || dealer.auto_win())
 					break;
 				std::cout << "Your choice: Stand, Hit";
 				if (stavka * 2 <= money+stavka)
@@ -282,13 +273,16 @@ int main()
 					std::cout << "Stavka: " << stavka << std::endl << std::endl;
 					Sleep(2000);
 					player.addCard();
+					if (player.Bust())
+					{
+						player.BustCancel();
+						if (player.Score() > 21)
+							break;
+					}
 					break;
 				}
 				else if (split && choice == "Split")
 					player.Split();
-				else
-					std::cout << "Wrong choice. Try again" << std::endl;
-
 			}
 
 			system("cls");
@@ -320,6 +314,12 @@ int main()
 			{
 				std::cout << "Dealer wins" << std::endl;
 				final('-', stavka, money);
+			}
+
+			else if (dealer.Score() == player.Score())
+			{
+				std::cout << "Draw" << std::endl;
+				money += stavka;
 			}
 
 			else if (player.Bust())
@@ -367,6 +367,10 @@ int main()
 			pack.clear();
 		}
 		if (money <= 0) std::cout << std::endl << "Casino always wins" << std::endl;
+	}
+	else
+	{
+		std::cout << "You don't have any money" << std::endl;
 	}
 	return 0;
 }
